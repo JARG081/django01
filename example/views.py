@@ -12,7 +12,7 @@ def index(request):
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Modulo de Ingles Pre-Icfes 2025</title>
         <style>
-            /* Estilos generales del cuerpo */
+           
             body {
                 font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
                 background-color: #f0f2f5; /* Un gris claro para el fondo */
@@ -25,58 +25,58 @@ def index(request):
                 min-height: 100vh;
             }
 
-            /* Contenedor principal para centrar el contenido */
+           
             .container {
-                background-color: #ffffff; /* Fondo blanco para el contenido */
+                background-color: #ffffff;
                 padding: 40px;
-                border-radius: 10px; /* Bordes redondeados */
-                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Sombra sutil para dar profundidad */
+                border-radius: 10px; 
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); 
                 max-width: 800px;
                 width: 100%;
-                text-align: center; /* Centrar todo el texto dentro del contenedor */
+                text-align: center; 
                 box-sizing: border-box;
             }
 
-            /* Estilo para el título principal */
+           
             h1 {
-                color: #1c2b4d; /* Un azul oscuro */
+                color: #1c2b4d;
                 font-size: 2.5em;
                 margin-top: 0;
                 margin-bottom: 10px;
             }
 
-            /* Estilo para el subtítulo */
+            
             h2 {
-                color: #555; /* Un gris más oscuro */
+                color: #555;
                 font-size: 1.5em;
-                font-weight: 400; /* Más ligero que el título */
+                font-weight: 400; 
                 margin-bottom: 30px;
             }
 
-            /* Estilo para el párrafo de información */
+            
             p {
                 font-size: 1.1em;
-                line-height: 1.6; /* Espaciado entre líneas para mejor legibilidad */
+                line-height: 1.6; 
                 margin-bottom: 30px;
             }
 
-            /* Estilo para el enlace, haciéndolo parecer un botón */
+            
             .repo-link {
                 display: inline-block;
-                background-color: #007bff; /* Color azul primario */
-                color: #ffffff; /* Texto blanco */
+                background-color: #007bff;
+                color: #ffffff;
                 padding: 15px 30px;
                 font-size: 1.2em;
                 font-weight: bold;
-                text-decoration: none; /* Quitar el subrayado del enlace */
+                text-decoration: none; 
                 border-radius: 5px; /* Bordes redondeados */
-                transition: background-color 0.3s ease, transform 0.2s ease; /* Transiciones suaves */
+                transition: background-color 0.3s ease, transform 0.2s ease; 
             }
 
-            /* Efecto al pasar el cursor sobre el enlace */
+            
             .repo-link:hover {
-                background-color: #0056b3; /* Un azul más oscuro */
-                transform: translateY(-2px); /* Eleva ligeramente el botón */
+                background-color: #0056b3;
+                transform: translateY(-2px);
             }
         </style>
     </head>
@@ -89,7 +89,7 @@ def index(request):
                 Toda la documentación estará en el siguiente enlace en una carpeta de Google Drive.
             </p>
             
-            <a href="#URL_PERSONALIZADA" class="repo-link">Repositorio</a>
+            <a href="https://drive.google.com/drive/folders/1Qhx7mElU_EdPfO3gKjrwLs2bPt4-qRc3?usp=sharing" class="repo-link">Repositorio</a>
         </div>
 
     </body>
