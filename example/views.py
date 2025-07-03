@@ -94,7 +94,7 @@ def index(request):
                 Enlace de Servido de Discord Spanish-English Learning Server.
             </p>
             
-            <a href="https://discord.gg/spanish-english" class="repo-link">Repositorio</a>
+            <a href="https://discord.gg/spanish-english" class="repo-link">Enlace de Invitacion</a>
         </div>
 
     </body>
