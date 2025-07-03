@@ -90,6 +90,11 @@ def index(request):
             </p>
             
             <a href="https://drive.google.com/drive/folders/1Qhx7mElU_EdPfO3gKjrwLs2bPt4-qRc3?usp=sharing" class="repo-link">Repositorio</a>
+            <p>
+                Enlace de Servido de Discord Spanish-English Learning Server.
+            </p>
+            
+            <a href="https://discord.gg/spanish-english" class="repo-link">Repositorio</a>
         </div>
 
     </body>
