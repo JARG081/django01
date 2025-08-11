@@ -10,12 +10,11 @@ def index(request):
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Modulo de Ingles Pre-Icfes 2025</title>
+        <title>Bienvenido</title>
         <style>
-           
             body {
                 font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-                background-color: #f0f2f5; /* Un gris claro para el fondo */
+                background-color: #f0f2f5;
                 color: #333;
                 margin: 0;
                 padding: 20px;
@@ -24,99 +23,107 @@ def index(request):
                 align-items: center;
                 min-height: 100vh;
             }
-
-           
             .container {
-                background-color: #ffffff;
+                background-color: #fff;
                 padding: 40px;
-                border-radius: 10px; 
-                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); 
-                max-width: 800px;
+                border-radius: 10px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+                max-width: 400px;
                 width: 100%;
-                text-align: center; 
-                box-sizing: border-box;
+                text-align: center;
             }
-
-           
-            h1 {
-                color: #1c2b4d;
-                font-size: 2.5em;
-                margin-top: 0;
-                margin-bottom: 10px;
-            }
-
-            
-            h2 {
-                color: #555;
-                font-size: 1.5em;
-                font-weight: 400; 
-                margin-bottom: 30px;
-            }
-
-            
-            p {
-                font-size: 1.1em;
-                line-height: 1.6; 
-                margin-bottom: 30px;
-            }
-
-            
-            .repo-link {
+            .main-link {
                 display: inline-block;
                 background-color: #007bff;
-                color: #ffffff;
+                color: #fff;
                 padding: 15px 30px;
                 font-size: 1.2em;
                 font-weight: bold;
-                text-decoration: none; 
-                border-radius: 5px; /* Bordes redondeados */
-                transition: background-color 0.3s ease, transform 0.2s ease; 
+                text-decoration: none;
+                border-radius: 5px;
+                transition: background-color 0.3s ease, transform 0.2s ease;
+                margin-top: 20px;
             }
-
-            
-            .repo-link:hover {
+            .main-link:hover {
                 background-color: #0056b3;
                 transform: translateY(-2px);
             }
         </style>
     </head>
     <body>
-
         <div class="container">
-            <h1>Módulo de Inglés Pre-Icfes 2025</h1>
-            <h2>Repositorio de Documentación</h2>
-            <p>
-                Toda la documentación estará en el siguiente enlace en una carpeta de Google Drive.
-            </p>
-            
-            <a href="https://drive.google.com/drive/folders/1Qhx7mElU_EdPfO3gKjrwLs2bPt4-qRc3?usp=sharing" class="repo-link">Repositorio</a>
-            <p>
-                Ingrese a los Minutos.
-            </p>
-             <h2>CAMBIO TESTEO</h2>
-            <a href="/minutos/" class="repo-link">Página Minutos</a>
-            <p>
-                Ingrese al Timer.
-            </p>
-            
-            <a href="/timer/" class="repo-link">Página Timer</a>
-            <p>
-                Ver ejemplo de otra vista:
-            </p>
-            
-            <a href="/ejemplo/" class="repo-link">Ver Ejemplo</a>
+            <h1>Bienvenido</h1>
+            <p>Para continuar, ingrese a su cuenta.</p>
+            <a href="/login/" class="main-link">Ingresar</a>
         </div>
-
     </body>
     </html>
     '''
     return HttpResponse(html)
 
-def timer(request):
-    return HttpResponse("Esta es la página del temporizador.")
+def login(request):
+    html = '''
+    <!DOCTYPE html>
+    <html lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <title>Login</title>
+        <style>
+            body { font-family: Arial, sans-serif; background: #f0f2f5; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+            .container { background: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); width: 350px; }
+            h2 { margin-bottom: 20px; }
+            input[type="text"], input[type="password"] { width: 100%; padding: 10px; margin-bottom: 15px; border-radius: 4px; border: 1px solid #ccc; }
+            button { width: 100%; padding: 10px; background: #007bff; color: #fff; border: none; border-radius: 4px; font-size: 1em; }
+            button:hover { background: #0056b3; }
+            .register-link { display: block; margin-top: 15px; text-align: center; color: #007bff; text-decoration: none; }
+            .register-link:hover { text-decoration: underline; }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <h2>Ingresar</h2>
+            <form method="post">
+                <input type="text" name="username" placeholder="Usuario" required>
+                <input type="password" name="password" placeholder="Contraseña" required>
+                <button type="submit">Ingresar</button>
+            </form>
+            <a href="/register/" class="register-link">¿No tienes cuenta? Regístrate</a>
+        </div>
+    </body>
+    </html>
+    '''
+    return HttpResponse(html)
 
-def minutos(request):
-    return HttpResponse("Esta es la página de minutos.")
-
-def ejemplo(request):
-    return HttpResponse("Esta es la página de ejemplo.")
+def register(request):
+    html = '''
+    <!DOCTYPE html>
+    <html lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <title>Registro</title>
+        <style>
+            body { font-family: Arial, sans-serif; background: #f0f2f5; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+            .container { background: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); width: 350px; }
+            h2 { margin-bottom: 20px; }
+            input[type="text"], input[type="password"], input[type="email"] { width: 100%; padding: 10px; margin-bottom: 15px; border-radius: 4px; border: 1px solid #ccc; }
+            button { width: 100%; padding: 10px; background: #28a745; color: #fff; border: none; border-radius: 4px; font-size: 1em; }
+            button:hover { background: #218838; }
+            .login-link { display: block; margin-top: 15px; text-align: center; color: #007bff; text-decoration: none; }
+            .login-link:hover { text-decoration: underline; }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <h2>Registro</h2>
+            <form method="post">
+                <input type="text" name="username" placeholder="Usuario" required>
+                <input type="email" name="email" placeholder="Correo electrónico" required>
+                <input type="password" name="password" placeholder="Contraseña" required>
+                <button type="submit">Registrarse</button>
+            </form>
+            <a href="/login/" class="login-link">¿Ya tienes cuenta? Ingresa</a>
+        </div>
+    </body>
+    </html>
+    '''
+    return HttpResponse(html)
