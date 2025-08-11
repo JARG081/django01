@@ -91,13 +91,32 @@ def index(request):
             
             <a href="https://drive.google.com/drive/folders/1Qhx7mElU_EdPfO3gKjrwLs2bPt4-qRc3?usp=sharing" class="repo-link">Repositorio</a>
             <p>
-                Enlace de Servido de Discord Spanish-English Learning Server.
+                Ingrese a los Minutos.
+            </p>
+             <h2>CAMBIO TESTEO</h2>
+            <a href="/minutos/" class="repo-link">Página Minutos</a>
+            <p>
+                Ingrese al Timer.
             </p>
             
-            <a href="https://discord.gg/spanish-english" class="repo-link">Enlace de Invitacion</a>
+            <a href="/timer/" class="repo-link">Página Timer</a>
+            <p>
+                Ver ejemplo de otra vista:
+            </p>
+            
+            <a href="/ejemplo/" class="repo-link">Ver Ejemplo</a>
         </div>
 
     </body>
     </html>
     '''
     return HttpResponse(html)
+
+def timer(request):
+    return HttpResponse("Esta es la página del temporizador.")
+
+def minutos(request):
+    return HttpResponse("Esta es la página de minutos.")
+
+def ejemplo(request):
+    return HttpResponse("Esta es la página de ejemplo.")
