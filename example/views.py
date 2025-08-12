@@ -94,7 +94,31 @@ def login(request):
     '''
     return HttpResponse(html)
 
+import hashlib
+from django.conf import settings
+from supabase import create_client
+from django.http import HttpResponse
+
+supabase = create_client(settings.SUPABASE_URL, settings.SUPABASE_KEY)
+
 def register(request):
+    if request.method == "POST":
+        nick = request.POST.get("username")
+        password = request.POST.get("password")
+        email = request.POST.get("email")  # No se usa, pero está en el formulario
+
+        # Hash de la contraseña
+        hashed_pass = hashlib.sha256(password.encode()).hexdigest()
+
+        # Insertar usuario en Supabase
+        data = {"nick": nick, "pass": hashed_pass}
+        response = supabase.table("Users").insert(data).execute()
+
+        if response.status_code == 201:
+            return HttpResponse("<h2>Registro exitoso</h2><a href='/login/'>Ingresar</a>")
+        else:
+            return HttpResponse("<h2>Error al registrar usuario</h2><a href='/register/'>Intentar de nuevo</a>")
+
     html = '''
     <!DOCTYPE html>
     <html lang="es">
