@@ -16,7 +16,15 @@ ALLOWED_HOSTS = [
 CSRF_TRUSTED_ORIGINS = [
     'https://*.vercel.app',
     'http://localhost:8000',
-    'http://127.0.0.1:8000'
+    'http://127.0.0.1:8000',
+    'https://minutosepsm.vercel.app'
+]
+CSRF_COOKIE_SECURE = True  # Solo en HTTPS
+CSRF_COOKIE_SAMESITE = None
+SESSION_COOKIE_SAMESITE = None
+CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOWED_ORIGINS = [
+    'https://minutosepsm.vercel.app'
 ]
 
 INSTALLED_APPS = [
