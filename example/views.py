@@ -5,6 +5,7 @@ from django.conf import settings
 from supabase import create_client
 from django.http import HttpResponse, HttpResponseRedirect
 
+# Conexión a Supabase
 supabase = create_client(settings.SUPABASE_URL, settings.SUPABASE_KEY)
 
 def index(request):
@@ -12,6 +13,30 @@ def index(request):
     return HttpResponseRedirect('/login/')
 
 def login(request):
+    if request.method == "POST":
+        username = request.POST.get("username")
+        password = request.POST.get("password")
+
+        # Hash de la contraseña ingresada
+        hashed_pass = hashlib.sha256(password.encode()).hexdigest()
+
+        try:
+            response = supabase.table("Users").select("*").eq("nick", username).execute()
+        except Exception as e:
+            return HttpResponse(f"<h2>Error al conectar con Supabase: {e}</h2>")
+
+        if response.error:
+            return HttpResponse(f"<h2>Error en la consulta: {response.error}</h2>")
+
+        if not response.data:
+            return HttpResponse("<h2>Usuario no encontrado</h2><a href='/login/'>Intentar de nuevo</a>")
+
+        user = response.data[0]
+        if user["pass"] != hashed_pass:
+            return HttpResponse("<h2>Contraseña incorrecta</h2><a href='/login/'>Intentar de nuevo</a>")
+
+        return HttpResponse(f"<h2>Bienvenido, {username}</h2>")
+
     html = '''
     <!DOCTYPE html>
     <html lang="es">
@@ -49,11 +74,9 @@ def register(request):
         nick = request.POST.get("username")
         password = request.POST.get("password")
 
-        # Hash de la contraseña
         hashed_pass = hashlib.sha256(password.encode()).hexdigest()
-
-        # Insertar usuario en Supabase
         data = {"nick": nick, "pass": hashed_pass}
+
         try:
             response = supabase.table("Users").insert(data).execute()
         except Exception as e:
@@ -63,6 +86,7 @@ def register(request):
             return HttpResponse(f"<h2>Error al registrar usuario: {response.error}</h2><a href='/register/'>Intentar de nuevo</a>")
 
         return HttpResponseRedirect('/login/')
+
     html = '''
     <!DOCTYPE html>
     <html lang="es">
