@@ -2,16 +2,26 @@
 from datetime import datetime
 import hashlib
 from django.conf import settings
-from supabase import create_client
 from django.http import HttpResponse, HttpResponseRedirect
 
+# Intentar importar supabase de forma segura
+try:
+    from supabase import create_client
+    SUPABASE_AVAILABLE = True
+except ImportError as e:
+    print("⚠ Error importando supabase-py:", e)
+    SUPABASE_AVAILABLE = False
 
-# Función para inicializar el cliente de Supabase cuando se necesite
+
+# Inicializar cliente solo si la librería está disponible
 def get_supabase():
+    if not SUPABASE_AVAILABLE:
+        print("⚠ Supabase no está disponible.")
+        return None
     try:
         return create_client(settings.SUPABASE_URL, settings.SUPABASE_KEY)
     except Exception as e:
-        print("Error inicializando Supabase:", e)
+        print("⚠ Error inicializando Supabase:", e)
         return None
 
 
