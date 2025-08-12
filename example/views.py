@@ -2,26 +2,17 @@
 from datetime import datetime
 import hashlib
 from django.conf import settings
+from supabase import create_client
 from django.http import HttpResponse, HttpResponseRedirect
-
-# Intentar importar supabase de forma segura
-try:
-    from supabase import create_client
-    SUPABASE_AVAILABLE = True
-except ImportError as e:
-    print("⚠ Error importando supabase-py:", e)
-    SUPABASE_AVAILABLE = False
+from django.middleware.csrf import get_token
 
 
-# Inicializar cliente solo si la librería está disponible
+# Función para inicializar el cliente de Supabase cuando se necesite
 def get_supabase():
-    if not SUPABASE_AVAILABLE:
-        print("⚠ Supabase no está disponible.")
-        return None
     try:
         return create_client(settings.SUPABASE_URL, settings.SUPABASE_KEY)
     except Exception as e:
-        print("⚠ Error inicializando Supabase:", e)
+        print("Error inicializando Supabase:", e)
         return None
 
 
@@ -57,28 +48,29 @@ def login(request):
 
         return HttpResponse(f"<h2>Bienvenido, {username}</h2>")
 
-    # Formulario HTML de login
-    html = '''
+    csrf_token = get_token(request)
+    html = f'''
     <!DOCTYPE html>
     <html lang="es">
     <head>
         <meta charset="UTF-8">
         <title>Login</title>
         <style>
-            body { font-family: Arial, sans-serif; background: #f0f2f5; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
-            .container { background: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); width: 350px; }
-            h2 { margin-bottom: 20px; }
-            input[type="text"], input[type="password"] { width: 100%; padding: 10px; margin-bottom: 15px; border-radius: 4px; border: 1px solid #ccc; }
-            button { width: 100%; padding: 10px; background: #007bff; color: #fff; border: none; border-radius: 4px; font-size: 1em; }
-            button:hover { background: #0056b3; }
-            .register-link { display: block; margin-top: 15px; text-align: center; color: #007bff; text-decoration: none; }
-            .register-link:hover { text-decoration: underline; }
+            body {{ font-family: Arial, sans-serif; background: #f0f2f5; display: flex; justify-content: center; align-items: center; min-height: 100vh; }}
+            .container {{ background: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); width: 350px; }}
+            h2 {{ margin-bottom: 20px; }}
+            input[type="text"], input[type="password"] {{ width: 100%; padding: 10px; margin-bottom: 15px; border-radius: 4px; border: 1px solid #ccc; }}
+            button {{ width: 100%; padding: 10px; background: #007bff; color: #fff; border: none; border-radius: 4px; font-size: 1em; }}
+            button:hover {{ background: #0056b3; }}
+            .register-link {{ display: block; margin-top: 15px; text-align: center; color: #007bff; text-decoration: none; }}
+            .register-link:hover {{ text-decoration: underline; }}
         </style>
     </head>
     <body>
         <div class="container">
             <h2>Ingresar</h2>
             <form method="post">
+                <input type="hidden" name="csrfmiddlewaretoken" value="{csrf_token}">
                 <input type="text" name="username" placeholder="Usuario" required>
                 <input type="password" name="password" placeholder="Contraseña" required>
                 <button type="submit">Ingresar</button>
@@ -113,28 +105,29 @@ def register(request):
 
         return HttpResponseRedirect('/login/')
 
-    # Formulario HTML de registro
-    html = '''
+    csrf_token = get_token(request)
+    html = f'''
     <!DOCTYPE html>
     <html lang="es">
     <head>
         <meta charset="UTF-8">
         <title>Registro</title>
         <style>
-            body { font-family: Arial, sans-serif; background: #f0f2f5; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
-            .container { background: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); width: 350px; }
-            h2 { margin-bottom: 20px; }
-            input[type="text"], input[type="password"] { width: 100%; padding: 10px; margin-bottom: 15px; border-radius: 4px; border: 1px solid #ccc; }
-            button { width: 100%; padding: 10px; background: #28a745; color: #fff; border: none; border-radius: 4px; font-size: 1em; }
-            button:hover { background: #218838; }
-            .login-link { display: block; margin-top: 15px; text-align: center; color: #007bff; text-decoration: none; }
-            .login-link:hover { text-decoration: underline; }
+            body {{ font-family: Arial, sans-serif; background: #f0f2f5; display: flex; justify-content: center; align-items: center; min-height: 100vh; }}
+            .container {{ background: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); width: 350px; }}
+            h2 {{ margin-bottom: 20px; }}
+            input[type="text"], input[type="password"] {{ width: 100%; padding: 10px; margin-bottom: 15px; border-radius: 4px; border: 1px solid #ccc; }}
+            button {{ width: 100%; padding: 10px; background: #28a745; color: #fff; border: none; border-radius: 4px; font-size: 1em; }}
+            button:hover {{ background: #218838; }}
+            .login-link {{ display: block; margin-top: 15px; text-align: center; color: #007bff; text-decoration: none; }}
+            .login-link:hover {{ text-decoration: underline; }}
         </style>
     </head>
     <body>
         <div class="container">
             <h2>Registro</h2>
             <form method="post">
+                <input type="hidden" name="csrfmiddlewaretoken" value="{csrf_token}">
                 <input type="text" name="username" placeholder="Usuario" required>
                 <input type="password" name="password" placeholder="Contraseña" required>
                 <button type="submit">Registrarse</button>
