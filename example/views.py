@@ -5,30 +5,40 @@ from django.conf import settings
 from supabase import create_client
 from django.http import HttpResponse, HttpResponseRedirect
 
-# Conexión a Supabase
-supabase = create_client(settings.SUPABASE_URL, settings.SUPABASE_KEY)
+
+# Función para inicializar el cliente de Supabase cuando se necesite
+def get_supabase():
+    try:
+        return create_client(settings.SUPABASE_URL, settings.SUPABASE_KEY)
+    except Exception as e:
+        print("Error inicializando Supabase:", e)
+        return None
+
 
 def index(request):
-    # Redirige directamente al login
     return HttpResponseRedirect('/login/')
+
 
 def login(request):
     if request.method == "POST":
         username = request.POST.get("username")
         password = request.POST.get("password")
 
-        # Hash de la contraseña ingresada
+        if not username or not password:
+            return HttpResponse("<h2>Faltan datos</h2><a href='/login/'>Intentar de nuevo</a>")
+
         hashed_pass = hashlib.sha256(password.encode()).hexdigest()
 
+        supabase = get_supabase()
+        if not supabase:
+            return HttpResponse("<h2>Error al conectar con Supabase</h2>")
+
         try:
-            response = supabase.table("Users").select("*").eq("nick", username).execute()
+            response = supabase.table("usuarios").select("*").eq("nick", username).execute()
         except Exception as e:
-            return HttpResponse(f"<h2>Error al conectar con Supabase: {e}</h2>")
+            return HttpResponse(f"<h2>Error en la consulta: {e}</h2>")
 
-        if response.error:
-            return HttpResponse(f"<h2>Error en la consulta: {response.error}</h2>")
-
-        if not response.data:
+        if not hasattr(response, "data") or not response.data:
             return HttpResponse("<h2>Usuario no encontrado</h2><a href='/login/'>Intentar de nuevo</a>")
 
         user = response.data[0]
@@ -37,6 +47,7 @@ def login(request):
 
         return HttpResponse(f"<h2>Bienvenido, {username}</h2>")
 
+    # Formulario HTML de login
     html = '''
     <!DOCTYPE html>
     <html lang="es">
@@ -69,24 +80,30 @@ def login(request):
     '''
     return HttpResponse(html)
 
+
 def register(request):
     if request.method == "POST":
         nick = request.POST.get("username")
         password = request.POST.get("password")
 
+        if not nick or not password:
+            return HttpResponse("<h2>Faltan datos</h2><a href='/register/'>Intentar de nuevo</a>")
+
         hashed_pass = hashlib.sha256(password.encode()).hexdigest()
         data = {"nick": nick, "pass": hashed_pass}
 
-        try:
-            response = supabase.table("Users").insert(data).execute()
-        except Exception as e:
-            return HttpResponse(f"<h2>Error al conectar con Supabase: {e}</h2>")
+        supabase = get_supabase()
+        if not supabase:
+            return HttpResponse("<h2>Error al conectar con Supabase</h2>")
 
-        if response.error:
-            return HttpResponse(f"<h2>Error al registrar usuario: {response.error}</h2><a href='/register/'>Intentar de nuevo</a>")
+        try:
+            response = supabase.table("usuarios").insert(data).execute()
+        except Exception as e:
+            return HttpResponse(f"<h2>Error al registrar usuario: {e}</h2><a href='/register/'>Intentar de nuevo</a>")
 
         return HttpResponseRedirect('/login/')
 
+    # Formulario HTML de registro
     html = '''
     <!DOCTYPE html>
     <html lang="es">
