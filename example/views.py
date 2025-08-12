@@ -34,7 +34,7 @@ def login(request):
             return HttpResponse("<h2>Error al conectar con Supabase</h2>")
 
         try:
-            response = supabase.table("usuarios").select("*").eq("nick", username).execute()
+            response = supabase.table("Users").select("*").eq("nick", username).execute()
         except Exception as e:
             return HttpResponse(f"<h2>Error en la consulta: {e}</h2>")
 
@@ -97,7 +97,7 @@ def register(request):
             return HttpResponse("<h2>Error al conectar con Supabase</h2>")
 
         try:
-            response = supabase.table("usuarios").insert(data).execute()
+            response = supabase.table("Users").insert(data).execute()
         except Exception as e:
             return HttpResponse(f"<h2>Error al registrar usuario: {e}</h2><a href='/register/'>Intentar de nuevo</a>")
 
