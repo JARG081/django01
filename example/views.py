@@ -54,14 +54,15 @@ def register(request):
 
         # Insertar usuario en Supabase
         data = {"nick": nick, "pass": hashed_pass}
-        response = supabase.table("Users").insert(data).execute()
+        try:
+            response = supabase.table("Users").insert(data).execute()
+        except Exception as e:
+            return HttpResponse(f"<h2>Error al conectar con Supabase: {e}</h2>")
 
-        # Redirige al login tras registro exitoso
-        if response.status_code == 201:
-            return HttpResponseRedirect('/login/')
-        else:
-            return HttpResponse("<h2>Error al registrar usuario</h2><a href='/register/'>Intentar de nuevo</a>")
+        if response.error:
+            return HttpResponse(f"<h2>Error al registrar usuario: {response.error}</h2><a href='/register/'>Intentar de nuevo</a>")
 
+        return HttpResponseRedirect('/login/')
     html = '''
     <!DOCTYPE html>
     <html lang="es">
