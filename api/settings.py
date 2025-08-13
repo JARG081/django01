@@ -27,7 +27,7 @@ SESSION_COOKIE_SAMESITE = None
 
 CORS_ALLOW_CREDENTIALS = True
 CSRF_TRUSTED_ORIGINS = [
-    'https://minutosepsm.vercel.app',
+    'https://*.minutosepsm.vercel.app'
 ]
 
 
@@ -45,7 +45,6 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    # Mantener CSRFViewMiddleware pero lo saltamos con @csrf_exempt en las vistas que queramos
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
