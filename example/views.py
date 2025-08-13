@@ -19,7 +19,6 @@ def index(request):
     return HttpResponseRedirect('/login/')
 
 # LOGIN (sin CSRF)
-@csrf_exempt
 def login(request):
     if request.method == "POST":
         username = request.POST.get("username")
@@ -51,7 +50,6 @@ def login(request):
     return render(request, "login.html")
 
 # REGISTRO (sin CSRF)
-@csrf_exempt
 def register(request):
     if request.method == "POST":
         nick = request.POST.get("username")
