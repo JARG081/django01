@@ -27,9 +27,10 @@ CSRF_COOKIE_SAMESITE = None
 SESSION_COOKIE_SAMESITE = None
 
 CORS_ALLOW_CREDENTIALS = True
-CORS_ALLOWED_ORIGINS = [
-    'https://minutosepsm.vercel.app'
+CSRF_TRUSTED_ORIGINS = [
+    'https://minutosepsm.vercel.app',
 ]
+
 
 INSTALLED_APPS = [
     'django.contrib.admin',
