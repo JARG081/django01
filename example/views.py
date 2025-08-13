@@ -4,7 +4,7 @@ from django.conf import settings
 from supabase import create_client
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
-from django.views.decorators.csrf import csrf_protect
+from django.views.decorators.csrf import csrf_exempt
 
 # Función para conectar con Supabase
 def get_supabase():
@@ -18,8 +18,8 @@ def get_supabase():
 def index(request):
     return HttpResponseRedirect('/login/')
 
-# LOGIN (con CSRF activado)
-@csrf_protect
+# LOGIN (sin CSRF)
+@csrf_exempt
 def login(request):
     if request.method == "POST":
         username = request.POST.get("username")
@@ -50,8 +50,8 @@ def login(request):
 
     return render(request, "login.html")
 
-# REGISTRO (con CSRF activado)
-@csrf_protect
+# REGISTRO (sin CSRF)
+@csrf_exempt
 def register(request):
     if request.method == "POST":
         nick = request.POST.get("username")
