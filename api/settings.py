@@ -70,6 +70,12 @@ TIME_ZONE = 'UTC'
 USE_I18N = USE_TZ = True
 STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+import os
 
-SUPABASE_URL = 'https://jgrmcclzvwcepfxifzex.supabase.co'
-SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Impncm1jY2x6dndjZXBmeGlmemV4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQ1MDE2NjYsImV4cCI6MjA3MDA3NzY2Nn0.cfwtX3s2A6DoZuxlI7OnLxioqXYxdOXiUuXJjwfJk0U'
+SUPABASE_URL = os.getenv("SUPABASE_URL")
+SUPABASE_KEY = os.getenv("SUPABASE_SERVICE_ROLE_KEY")  # usamos service_role en backend
+
+if not SUPABASE_URL or not SUPABASE_KEY:
+    raise RuntimeError(
+        "Faltan SUPABASE_URL o SUPABASE_SERVICE_ROLE_KEY en Vercel → Settings → Environment Variables"
+    )
