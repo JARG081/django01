@@ -72,4 +72,4 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 SUPABASE_URL = 'https://jgrmcclzvwcepfxifzex.supabase.co'
-SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9....'
+SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Impncm1jY2x6dndjZXBmeGlmemV4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQ1MDE2NjYsImV4cCI6MjA3MDA3NzY2Nn0.cfwtX3s2A6DoZuxlI7OnLxioqXYxdOXiUuXJjwfJk0U'
