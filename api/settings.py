@@ -1,4 +1,4 @@
-# settings.py
+# api/settings.py
 import os
 from pathlib import Path
 
