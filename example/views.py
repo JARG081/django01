@@ -10,6 +10,7 @@ from django.views.decorators.http import require_http_methods
 
 def get_supabase():
     try:
+        from supabase import create_client 
         return create_client(settings.SUPABASE_URL, settings.SUPABASE_KEY)
     except Exception as e:
         print("Error inicializando Supabase:", e)
@@ -83,18 +84,39 @@ import os
 
 @never_cache
 def ping(request):
-    return JsonResponse({"ok": True, "path": request.path})
+    # Incluimos también cualquier dato que venga en query params o body
+    payload = {
+        "ok": True,
+        "path": request.path,
+        "method": request.method,
+    }
+    if request.GET:
+        payload["query_params"] = dict(request.GET)
+    if request.body:
+        try:
+            payload["body"] = request.body.decode("utf-8")
+        except Exception:
+            payload["body"] = str(request.body)
+    return JsonResponse(payload)
 
 @never_cache
 def env_check(request):
-    # NO devuelvas la key completa por seguridad
     url = os.getenv("SUPABASE_URL")
-    key = os.getenv("SUPABASE_SERVICE_ROLE_KEY")
-    masked_key = (key[:6] + "..." + key[-4:]) if key and len(key) > 10 else None
+    key = os.getenv("SUPABASE_SERVICE_ROLE_KEY") or os.getenv("SUPABASE_ANON_KEY")
+
+    masked_key = (key[:6] + "..." + key[-4:]) if key and len(key or "") > 10 else None
+
+    # Construye el payload, pero deja espacio para añadir más campos
     payload = {
-        "DEBUG": False,  # estás en prod
+        "DEBUG": os.getenv("DJANGO_DEBUG", "False"),
         "SUPABASE_URL_set": bool(url),
         "SUPABASE_SERVICE_ROLE_KEY_set": bool(key),
         "SUPABASE_SERVICE_ROLE_KEY_masked": masked_key,
     }
+
+    # Si quieres incluir headers y query params para debug
+    payload["headers"] = {k: v for k, v in request.headers.items()}
+    if request.GET:
+        payload["query_params"] = dict(request.GET)
+
     return JsonResponse(payload)

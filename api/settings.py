@@ -1,4 +1,5 @@
 # api/settings.py
+import logging
 import os
 from pathlib import Path
 
@@ -70,8 +71,6 @@ TIME_ZONE = 'UTC'
 USE_I18N = USE_TZ = True
 STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-import os
-
 SUPABASE_URL = os.getenv("SUPABASE_URL")
 SUPABASE_KEY = os.getenv("SUPABASE_SERVICE_ROLE_KEY")  # usamos service_role en backend
 
@@ -79,3 +78,17 @@ if not SUPABASE_URL or not SUPABASE_KEY:
     raise RuntimeError(
         "Faltan SUPABASE_URL o SUPABASE_SERVICE_ROLE_KEY en Vercel → Settings → Environment Variables"
     )
+logger = logging.getLogger(__name__)
+
+SUPABASE_URL = os.getenv("SUPABASE_URL")
+SUPABASE_KEY = os.getenv("SUPABASE_SERVICE_ROLE_KEY") or os.getenv("SUPABASE_ANON_KEY")
+
+if not SUPABASE_URL or not SUPABASE_KEY:
+    logger.warning("Supabase ENV incompleta: SUPABASE_URL or SUPABASE_*_KEY not set. Views will degrade gracefully.")
+    
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": { "console": { "class": "logging.StreamHandler" } },
+    "root": { "handlers": ["console"], "level": "INFO" },
+}
