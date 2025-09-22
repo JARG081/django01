@@ -3,9 +3,8 @@ import os
 from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
-
 SECRET_KEY = 'django-insecure-...'
-DEBUG = os.environ.get('DJANGO_DEBUG', 'True') == 'True'
+DEBUG = False
 
 ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '.vercel.app']
 
@@ -16,8 +15,12 @@ CSRF_TRUSTED_ORIGINS = [
 ]
 
 # --- Cookies seguros: en dev (DEBUG=True) deben ir en False para permitir HTTP ---
-CSRF_COOKIE_SECURE = not DEBUG
-SESSION_COOKIE_SECURE = not DEBUG
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
+# Django debe confiar en los headers del proxy para detectar HTTPS/host
+USE_X_FORWARDED_HOST = True
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
 
 # Si tu front y back están en el MISMO origen, Lax es lo ideal.
 # Si vas a enviar cookies cross-site (front en *.vercel.app y API en otro dominio),
