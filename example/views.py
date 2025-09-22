@@ -76,3 +76,25 @@ def register_view(request):
         return HttpResponse(f"<h2>Error al registrar usuario: {e}</h2><a href='/register/'>Intentar de nuevo</a>")
 
     return HttpResponseRedirect('/login/')
+
+from django.http import JsonResponse
+from django.views.decorators.cache import never_cache
+import os
+
+@never_cache
+def ping(request):
+    return JsonResponse({"ok": True, "path": request.path})
+
+@never_cache
+def env_check(request):
+    # NO devuelvas la key completa por seguridad
+    url = os.getenv("SUPABASE_URL")
+    key = os.getenv("SUPABASE_SERVICE_ROLE_KEY")
+    masked_key = (key[:6] + "..." + key[-4:]) if key and len(key) > 10 else None
+    payload = {
+        "DEBUG": False,  # estás en prod
+        "SUPABASE_URL_set": bool(url),
+        "SUPABASE_SERVICE_ROLE_KEY_set": bool(key),
+        "SUPABASE_SERVICE_ROLE_KEY_masked": masked_key,
+    }
+    return JsonResponse(payload)
