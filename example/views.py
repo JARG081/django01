@@ -1,32 +1,37 @@
 # example/views.py
-from datetime import datetime
-import hashlib
 from django.conf import settings
-from supabase import create_client
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render, redirect
 from django.views.decorators.csrf import ensure_csrf_cookie, csrf_protect
 from django.views.decorators.http import require_http_methods
+from django.views.decorators.cache import never_cache
+import hashlib
+import os
+
+
+SUPABASE_SERVICE_ROL_KEY = os.getenv("SUPABASE_SERVICE_ROL_KEY")
+SUPABASE_URL = os.getenv("SUPABASE_URL")
 
 def get_supabase():
+    # Importar dentro de la función para que un fallo no rompa el arranque
     try:
-        from supabase import create_client 
+        from supabase import create_client
         return create_client(settings.SUPABASE_URL, settings.SUPABASE_KEY)
     except Exception as e:
+        # NO levantar excepción aquí; devolvemos None y la vista muestra un mensaje
         print("Error inicializando Supabase:", e)
         return None
 
 def index(request):
     return HttpResponseRedirect('/login/')
 
-@ensure_csrf_cookie                 # Asegura set de cookie en GET
+@ensure_csrf_cookie
 @require_http_methods(["GET","POST"])
-@csrf_protect                       # Valida token en POST
+@csrf_protect
 def login_view(request):
     if request.method == "GET":
         return render(request, "login.html")
 
-    # POST
     username = request.POST.get("username")
     password = request.POST.get("password")
     if not username or not password:
@@ -42,11 +47,11 @@ def login_view(request):
     except Exception as e:
         return HttpResponse(f"<h2>Error en la consulta: {e}</h2>")
 
-    if not hasattr(response, "data") or not response.data:
+    if not getattr(response, "data", None):
         return HttpResponse("<h2>Usuario no encontrado</h2><a href='/login/'>Intentar de nuevo</a>")
 
     user = response.data[0]
-    if user["pass"] != hashed_pass:
+    if user.get("pass") != hashed_pass:
         return HttpResponse("<h2>Contraseña incorrecta</h2><a href='/login/'>Intentar de nuevo</a>")
 
     return HttpResponse(f"<h2>Bienvenido, {username}</h2>")
@@ -58,7 +63,6 @@ def register_view(request):
     if request.method == "GET":
         return render(request, "register.html")
 
-    # POST
     nick = request.POST.get("username")
     password = request.POST.get("password")
     if not nick or not password:
@@ -78,13 +82,9 @@ def register_view(request):
 
     return HttpResponseRedirect('/login/')
 
-from django.http import JsonResponse
-from django.views.decorators.cache import never_cache
-import os
-
+# --- Endpoints de diagnóstico que NO dependen de Supabase ---
 @never_cache
 def ping(request):
-    # Incluimos también cualquier dato que venga en query params o body
     payload = {
         "ok": True,
         "path": request.path,
@@ -103,20 +103,14 @@ def ping(request):
 def env_check(request):
     url = os.getenv("SUPABASE_URL")
     key = os.getenv("SUPABASE_SERVICE_ROLE_KEY") or os.getenv("SUPABASE_ANON_KEY")
-
-    masked_key = (key[:6] + "..." + key[-4:]) if key and len(key or "") > 10 else None
-
-    # Construye el payload, pero deja espacio para añadir más campos
+    masked_key = (key[:6] + "..." + key[-4:]) if key and len(key) > 10 else None
     payload = {
-        "DEBUG": os.getenv("DJANGO_DEBUG", "False"),
         "SUPABASE_URL_set": bool(url),
-        "SUPABASE_SERVICE_ROLE_KEY_set": bool(key),
-        "SUPABASE_SERVICE_ROLE_KEY_masked": masked_key,
+        "SUPABASE_KEY_set": bool(key),
+        "SUPABASE_KEY_masked": masked_key,
     }
-
-    # Si quieres incluir headers y query params para debug
+    # Útiles para ver encabezados que Vercel pasa a tu función
     payload["headers"] = {k: v for k, v in request.headers.items()}
     if request.GET:
         payload["query_params"] = dict(request.GET)
-
     return JsonResponse(payload)
