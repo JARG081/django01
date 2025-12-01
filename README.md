@@ -1,12 +1,8 @@
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fvercel%2Fexamples%2Ftree%2Fmain%2Fpython%2Fdjango&demo-title=Django%20%2B%20Vercel&demo-description=Use%20Django%204%20on%20Vercel%20with%20Serverless%20Functions%20using%20the%20Python%20Runtime.&demo-url=https%3A%2F%2Fdjango-template.vercel.app%2F&demo-image=https://assets.vercel.com/image/upload/v1669994241/random/django.png)
+# Impostor Lobby - Django
 
-# Django + Vercel
+Aplicación de lobby simple con **Django + HTML/CSS/JS vanilla puro**. Sin frameworks frontend (no Angular, no React, no TypeScript).
 
-This example shows how to use Django 4 on Vercel with Serverless Functions using the [Python Runtime](https://vercel.com/docs/concepts/functions/serverless-functions/runtimes/python).
-
-## Demo
-
-https://django-template.vercel.app/
+Los usuarios pueden unirse a una sala de espera, ver otros usuarios conectados en tiempo real, y salir del lobby.
 
 ## How it Works
 
@@ -91,16 +87,54 @@ urlpatterns = [
 
 This example uses the Web Server Gateway Interface (WSGI) with Django to enable handling requests on Vercel with Serverless Functions.
 
-## Running Locally
+## Estructura del Proyecto
 
-```bash
+- **Navegación**: 4 items en el navbar (Impostor, Item2, Item3, Item4)
+- **Página Impostor** (`/`): Formulario para ingresar nombre de usuario y unirse al lobby
+- **Sala de Espera** (`/waiting`): 
+  - Contador regresivo de 60 a 0 segundos
+  - Lista de usuarios conectados (actualización cada 2 segundos)
+  - Botón para salir del lobby
+- **Persistencia**: Los usuarios se guardan en `lobby.json` en el root del proyecto
+
+## APIs JSON
+
+- `POST /api/lobby/join` - Unirse al lobby
+  ```json
+  { "username": "tu_nick" }
+  ```
+- `POST /api/lobby/leave` - Salir del lobby
+  ```json
+  { "username": "tu_nick" }
+  ```
+- `GET /api/lobby/users` - Listar usuarios en el lobby
+
+## Ejecutar Localmente
+
+1. Crear y activar entorno virtual:
+```powershell
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+```
+
+2. Instalar dependencias:
+```powershell
+pip install -r requirements.txt
+```
+
+3. Ejecutar servidor de desarrollo:
+```powershell
 python manage.py runserver
 ```
 
-Your Django application is now available at `http://localhost:8000`.
+4. Abrir navegador en `http://localhost:8000`
 
-## One-Click Deploy
+## Deploy en Vercel
 
-Deploy the example using [Vercel](https://vercel.com?utm_source=github&utm_medium=readme&utm_campaign=vercel-examples):
+El proyecto está configurado para desplegar en Vercel:
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fvercel%2Fexamples%2Ftree%2Fmain%2Fpython%2Fdjango&demo-title=Django%20%2B%20Vercel&demo-description=Use%20Django%204%20on%20Vercel%20with%20Serverless%20Functions%20using%20the%20Python%20Runtime.&demo-url=https%3A%2F%2Fdjango-template.vercel.app%2F&demo-image=https://assets.vercel.com/image/upload/v1669994241/random/django.png)
+```bash
+vercel
+```
+
+**Nota importante**: En Vercel, el filesystem es efímero. El archivo `lobby.json` se resetea entre despliegues y no se comparte entre instancias. Para persistencia real en producción, considera usar Supabase u otra base de datos.

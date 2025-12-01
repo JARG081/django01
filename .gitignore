@@ -4,6 +4,8 @@
 __pycache__
 db.sqlite3
 media
+lobby.json
+lobby.tmp
 
 # Environments 
 .env 
@@ -12,4 +14,8 @@ env/
 venv/ 
 ENV/ 
 env.bak/ 
-venv.bak/ 
+venv.bak/
+
+# Frontend (no usado - solo Django con templates HTML)
+frontend/
+node_modules/ 

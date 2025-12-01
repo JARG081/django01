@@ -80,11 +80,13 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "corsheaders",
     "example",
 ]
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -126,6 +128,13 @@ USE_TZ = True
 
 STATIC_URL = "static/"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+# -----------------------------------------------------------------------------
+# CORS (permitir front Angular en dev y mismo origen en Vercel)
+# -----------------------------------------------------------------------------
+# Simplificamos: permitir todos los orígenes en este prototipo
+CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_CREDENTIALS = True
 
 # -----------------------------------------------------------------------------
 # Supabase (LEER SOLO DE ENV; no crashear si faltan para que /env y /ping funcionen)

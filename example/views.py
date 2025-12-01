@@ -2,11 +2,14 @@
 from django.conf import settings
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render, redirect
-from django.views.decorators.csrf import ensure_csrf_cookie, csrf_protect
+from django.views.decorators.csrf import ensure_csrf_cookie, csrf_protect, csrf_exempt
 from django.views.decorators.http import require_http_methods
 from django.views.decorators.cache import never_cache
 import hashlib
 import os
+import json
+from pathlib import Path
+from typing import List
 
 
 SUPABASE_SERVICE_ROL_KEY = os.getenv("SUPABASE_SERVICE_ROL_KEY")
@@ -23,7 +26,19 @@ def get_supabase():
         return None
 
 def index(request):
-    return HttpResponseRedirect('/login/')
+    return render(request, 'impostor.html')
+
+def waiting_view(request):
+    return render(request, 'waiting.html')
+
+def item2_view(request):
+    return render(request, 'item.html', {'title': 'Item2'})
+
+def item3_view(request):
+    return render(request, 'item.html', {'title': 'Item3'})
+
+def item4_view(request):
+    return render(request, 'item.html', {'title': 'Item4'})
 
 @ensure_csrf_cookie
 @require_http_methods(["GET","POST"])
@@ -114,3 +129,64 @@ def env_check(request):
     if request.GET:
         payload["query_params"] = dict(request.GET)
     return JsonResponse(payload)
+
+# ----------------------------
+# Lobby JSON-based endpoints
+# ----------------------------
+
+LOBBY_FILE = Path(settings.BASE_DIR) / "lobby.json"
+
+def _read_lobby() -> List[str]:
+    try:
+        if not LOBBY_FILE.exists():
+            return []
+        with LOBBY_FILE.open("r", encoding="utf-8") as f:
+            data = json.load(f)
+            if isinstance(data, list):
+                return [str(x) for x in data]
+            return []
+    except Exception:
+        return []
+
+def _write_lobby(users: List[str]) -> None:
+    tmp = LOBBY_FILE.with_suffix(".tmp")
+    with tmp.open("w", encoding="utf-8") as f:
+        json.dump(sorted(set(users)), f, ensure_ascii=False)
+    tmp.replace(LOBBY_FILE)
+
+@csrf_exempt
+@require_http_methods(["POST"])
+def lobby_join(request):
+    try:
+        body = json.loads(request.body or b"{}")
+    except json.JSONDecodeError:
+        body = {}
+    username = (body.get("username") or "").strip()
+    if not username:
+        return JsonResponse({"ok": False, "error": "username requerido"}, status=400)
+
+    users = _read_lobby()
+    if username not in users:
+        users.append(username)
+        _write_lobby(users)
+    return JsonResponse({"ok": True, "users": users})
+
+@csrf_exempt
+@require_http_methods(["POST"])
+def lobby_leave(request):
+    try:
+        body = json.loads(request.body or b"{}")
+    except json.JSONDecodeError:
+        body = {}
+    username = (body.get("username") or "").strip()
+    if not username:
+        return JsonResponse({"ok": False, "error": "username requerido"}, status=400)
+
+    users = [u for u in _read_lobby() if u != username]
+    _write_lobby(users)
+    return JsonResponse({"ok": True, "users": users})
+
+@never_cache
+@require_http_methods(["GET"])
+def lobby_users(request):
+    return JsonResponse({"ok": True, "users": _read_lobby()})
